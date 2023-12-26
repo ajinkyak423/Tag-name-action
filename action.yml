@@ -1,4 +1,4 @@
-name: 'Hello World'
+name: 'Image tag'
 description: 'Greet someone'
 inputs:
   who-to-greet:  # id of input
@@ -9,10 +9,18 @@ outputs:
   random-number:
     description: "Random number"
     value: ${{ steps.random-number-generator.outputs.random-number }}
+  processed-tag:
+    description: "Processed tag string"
+    value: ${{ steps.tag-processing.outputs.IMAGE_TAG }}
 runs:
   using: "composite"
   steps:
-    - run: echo Hello ${{ inputs.who-to-greet }}.
+    - id: tag-processing
+    - run: |
+      IMAGE_TAG=${{ inputs.who-to-greet }}
+      IMAGE_TAG=$(echo -n "${IMAGE_TAG:0:63}" | sed -e 's/[._-]*$//' -e 's/[^[:alnum:]]*$//')
+      echo "IMAGE_TAG=$(echo $IMAGE_TAG)" >> $GITHUB_OUTPUT
+
       shell: bash
     - id: random-number-generator
       run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
