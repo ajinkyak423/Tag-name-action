@@ -7,12 +7,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: foo
-        uses: ajinkyak423/Tag-name-action@v1.3.4
+        uses: ajinkyak423/Tag-name-action@v1.3.5
         with:
-          commit-id: ${{ github.sha }}
-          branch-name: ${{ github.ref_name }}
           images: us.gcr.io/ridecell-1/summon
       - run: echo random-number ${{ steps.foo.outputs.random-number }}
         shell: bash
       - run: echo image-tag ${{ steps.foo.outputs.image-tag }}
-        shell: bash      
+        shell: bash
+      - run: echo image-tag ${{ steps.foo.outputs.image-tag-value }}
+        shell: bash    
