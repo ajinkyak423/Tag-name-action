@@ -3,15 +3,13 @@ on: [push]
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: A job to get image tag
     steps:
       - uses: actions/checkout@v4
       - id: foo
-        uses: ajinkyak423/Tag-name-action@v1.3.5
+        uses: ajinkyak423/Tag-name-action@v1.4.2
         with:
           images: us.gcr.io/ridecell-1/summon
-      - run: echo random-number ${{ steps.foo.outputs.random-number }}
-        shell: bash
       - run: echo image-tag ${{ steps.foo.outputs.image-tag }}
         shell: bash
       - run: echo image-tag ${{ steps.foo.outputs.image-tag-value }}
