@@ -1,6 +1,18 @@
 name: 'Image tag'
 description: 'Greet someone'
 inputs:
+  commit-id:
+    description: 'The commit ID.'
+    required: true
+  branch-name:
+    description: 'The branch name.'
+    required: true
+  tag-name:
+    description: 'The tag name.'
+    required: false
+  images:
+    description: 'The image name.'
+    required: true
   who-to-greet:  # id of input
     description: 'Who to greet'
     required: true
@@ -9,17 +21,33 @@ outputs:
   random-number:
     description: "Random number"
     value: ${{ steps.random-number-generator.outputs.random-number }}
-  processed-tag:
+  image-tag:
     description: "Processed tag string"
-    value: ${{ steps.tag-processing.outputs.IMAGE_TAG }}
+    value: ${{ steps.image-tag.outputs.IMAGE_TAG_VALUE }}
 runs:
   using: "composite"
   steps:
-    - id: tag-processing
+    - id: short-commit-id
     - run: |
-      IMAGE_TAG=${{ inputs.who-to-greet }}
-      IMAGE_TAG=$(echo -n "${IMAGE_TAG:0:63}" | sed -e 's/[._-]*$//' -e 's/[^[:alnum:]]*$//')
-      echo "IMAGE_TAG=$(echo $IMAGE_TAG)" >> $GITHUB_OUTPUT
+      SHORT_SHA=${{ inputs.commit-id::7 }}
+      echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+
+    - id: current-date
+    - run: |
+      CURRENT_DATE=$(date +'%s')
+      echo "CURRENT_DATE=$CURRENT_DATE" >> $GITHUB_ENV
+
+    - id: create-&-process-tag-value
+    - run: |
+      IMAGE_TAG_VALUE=${{ env.CURRENT_DATE }}-${{ env.SHORT_SHA }}-{{ input.branch-name }}
+      IMAGE_TAG_VALUE=${IMAGE_TAG_VALUE:0:63}
+      IMAGE_TAG_VALUE=$(echo "${IMAGE_TAG_VALUE}" | sed -E -e 's/-+/-/g' -e 's/_+/_/g' -e 's/[^[:alnum:]]*$//' | tr -d '\@\#\$\%\^\&\*\(\)\{\}\[\]')
+      echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE"
+      echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE" >> $GITHUB_ENV
+      
+    - id: image-tag
+    - run: |
+      echo "IMAGE_TAG_VALUE=${{ env.IMAGE_TAG_VALUE }}" >> $GITHUB_OUTPUT
 
       shell: bash
     - id: random-number-generator
