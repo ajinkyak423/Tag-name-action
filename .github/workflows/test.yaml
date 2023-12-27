@@ -7,10 +7,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: foo
-        uses: ajinkyak423/Tag-name-action@v1.1
+        uses: ajinkyak423/Tag-name-action@v1.2
         with:
           who-to-greet: '1703589266-1289188-ocean-b2i-major-pcr12-21st-dec23MonatheOctocat'
       - run: echo random-number ${{ steps.foo.outputs.random-number }}
         shell: bash
-      - run: echo random-number ${{ steps.foo.outputs.processed-tag }}
+      - run: echo image-tag ${{ steps.foo.outputs.image-tag }}
         shell: bash      
