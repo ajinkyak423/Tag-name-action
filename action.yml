@@ -36,7 +36,7 @@ runs:
       run: |
         echo "CURRENT_DATE=$(date +'%s')" >> $GITHUB_ENV
       shell: bash
-    - id: create-&-process-tag-value
+    - id: create-and-process-tag-value
       run: |
         IMAGE_TAG_VALUE=${{ env.CURRENT_DATE }}-${{ env.SHORT_SHA }}-${{ inputs.branch-name }}
         IMAGE_TAG_VALUE=${IMAGE_TAG_VALUE:0:63}
