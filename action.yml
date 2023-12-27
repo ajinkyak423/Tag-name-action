@@ -6,7 +6,7 @@ inputs:
     required: false
   branch-name:
     description: 'The branch name.'
-    required: true
+    required: false
   tag-name:
     description: 'The tag name.'
     required: false
@@ -38,7 +38,7 @@ runs:
       shell: bash
     - id: create-and-process-tag-value
       run: |
-        IMAGE_TAG_VALUE=${{ env.CURRENT_DATE }}-${{ env.SHORT_SHA }}-${{ inputs.branch-name }}
+        IMAGE_TAG_VALUE=${{ env.CURRENT_DATE }}-${{ env.SHORT_SHA }}-${{ github.ref_name }}
         IMAGE_TAG_VALUE=${IMAGE_TAG_VALUE:0:63}
         IMAGE_TAG_VALUE=$(echo "${IMAGE_TAG_VALUE}" | sed -E -e 's/-+/-/g' -e 's/_+/_/g' -e 's/[^[:alnum:]]*$//' | tr -d '\@\#\$\%\^\&\*\(\)\{\}\[\]')
         echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE"
