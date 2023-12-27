@@ -34,19 +34,19 @@ runs:
       shell: bash
     - id: create-and-process-tag-value
       run: |
-        IMAGE_TAG_VALUE=${{ env.CURRENT_DATE }}-${{ env.SHORT_SHA }}-${{ github.ref_name }}
-        IMAGE_TAG_VALUE=${IMAGE_TAG_VALUE:0:63}
-        IMAGE_TAG_VALUE=$(echo "${IMAGE_TAG_VALUE}" | sed -E -e 's/-+/-/g' -e 's/_+/_/g' -e 's/[^[:alnum:]]*$//' | tr -d '\@\#\$\%\^\&\*\(\)\{\}\[\]')
-        echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE"
-        echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE" >> $GITHUB_ENV
+        TAG=${{ env.CURRENT_DATE }}-${{ env.SHORT_SHA }}-${{ github.ref_name }}
+        TAG=${TAG:0:63}
+        TAG=$(echo "${TAG}" | sed -E -e 's/-+/-/g' -e 's/_+/_/g' -e 's/[^[:alnum:]]*$//' | tr -d '\@\#\$\%\^\&\*\(\)\{\}\[\]')
+        echo "TAG=$TAG"
+        echo "TAG=$TAG" >> $GITHUB_ENV
       shell: bash
     - id: image-tag-value
       run: |
-        IMAGE_TAG_VALUE=${{ env.IMAGE_TAG_VALUE }}
+        IMAGE_TAG_VALUE=${{ env.TAG }}
         echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE" >> $GITHUB_OUTPUT
       shell: bash
     - id: image-tag
       run: |
-        IMAGE_TAG=${{ inputs.images }}:${{ env.IMAGE_TAG_VALUE }}
+        IMAGE_TAG=${{ inputs.images }}:${{ env.TAG }}
         echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
       shell: bash
