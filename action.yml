@@ -28,32 +28,27 @@ runs:
   using: "composite"
   steps:
     - id: short-commit-id
-    - run: |
-        SHORT_SHA=${{ inputs.commit-id::7 }}
-        echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+      run: |
+        SHORT_SHA=${{ inputs.commit-id }}
+        echo "SHORT_SHA=${SHORT_SHA::7}" >> $GITHUB_ENV
       shell: bash
-
     - id: current-date
-    - run: |
-        CURRENT_DATE=$(date +'%s')
-        echo "CURRENT_DATE=$CURRENT_DATE" >> $GITHUB_ENV
+      run: |
+        echo "CURRENT_DATE=$(date +'%s')" >> $GITHUB_ENV
       shell: bash
-
     - id: create-&-process-tag-value
-    - run: |
-        IMAGE_TAG_VALUE=${{ env.CURRENT_DATE }}-${{ env.SHORT_SHA }}-{{ input.branch-name }}
+      run: |
+        IMAGE_TAG_VALUE=${{ env.CURRENT_DATE }}-${{ env.SHORT_SHA }}-${{ inputs.branch-name }}
         IMAGE_TAG_VALUE=${IMAGE_TAG_VALUE:0:63}
         IMAGE_TAG_VALUE=$(echo "${IMAGE_TAG_VALUE}" | sed -E -e 's/-+/-/g' -e 's/_+/_/g' -e 's/[^[:alnum:]]*$//' | tr -d '\@\#\$\%\^\&\*\(\)\{\}\[\]')
         echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE"
         echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE" >> $GITHUB_ENV
       shell: bash
-      
     - id: image-tag
-    - run: |
-        IMAGE_TAG_VALUE=${{ input.images }}${{ env.IMAGE_TAG_VALUE }}
+      run: |
+        IMAGE_TAG_VALUE=${{ inputs.images }}${{ env.IMAGE_TAG_VALUE }}
         echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE" >> $GITHUB_OUTPUT
       shell: bash
-
     - id: random-number-generator
       run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
       shell: bash
