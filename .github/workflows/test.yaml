@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: foo
-        uses: ajinkyak423/Tag-name-action@v1.3.3
+        uses: ajinkyak423/Tag-name-action@v1.3.4
         with:
           commit-id: ${{ github.sha }}
           branch-name: ${{ github.ref_name }}
