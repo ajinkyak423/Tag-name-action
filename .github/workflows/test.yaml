@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: foo
-        uses: ajinkyak423/Tag-name-action@v1.4.3
+        uses: ajinkyak423/Tag-name-action@v1.4.4
         with:
           images: us.gcr.io/ridecell-1/summon
       - run: echo image-tag ${{ steps.foo.outputs.image-tag }}
