@@ -19,7 +19,7 @@ outputs:
     value: ${{ steps.image-tag.outputs.IMAGE_TAG }}
   image-tag-value:
     description: "Tag value"
-    value: ${{ steps.image-tag.outputs.IMAGE_TAG_VALUE }}
+    value: ${{ steps.image-tag-value.outputs.IMAGE_TAG_VALUE }}
 runs:
   using: "composite"
   steps:
