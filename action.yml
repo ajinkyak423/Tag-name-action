@@ -13,14 +13,7 @@ inputs:
   images:
     description: 'The image name.'
     required: false
-  who-to-greet:  # id of input
-    description: 'Who to greet'
-    required: true
-    default: 'World'
 outputs:
-  random-number:
-    description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-number }}
   image-tag:
     description: "Tag string"
     value: ${{ steps.image-tag.outputs.IMAGE_TAG }}
@@ -56,11 +49,4 @@ runs:
       run: |
         IMAGE_TAG=${{ inputs.images }}:${{ env.IMAGE_TAG_VALUE }}
         echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
-      shell: bash
-    - id: random-number-generator
-      run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
-      shell: bash
-    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
-      shell: bash
-    - run: goodbye.sh
       shell: bash
