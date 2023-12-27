@@ -12,7 +12,7 @@ inputs:
     required: false
   images:
     description: 'The image name.'
-    required: true
+    required: false
   who-to-greet:  # id of input
     description: 'Who to greet'
     required: true
@@ -22,7 +22,10 @@ outputs:
     description: "Random number"
     value: ${{ steps.random-number-generator.outputs.random-number }}
   image-tag:
-    description: "Processed tag string"
+    description: "Tag string"
+    value: ${{ steps.image-tag.outputs.IMAGE_TAG }}
+  image-tag-value:
+    description: "Tag value"
     value: ${{ steps.image-tag.outputs.IMAGE_TAG_VALUE }}
 runs:
   using: "composite"
@@ -44,10 +47,15 @@ runs:
         echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE"
         echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE" >> $GITHUB_ENV
       shell: bash
+    - id: image-tag-value
+    run: |
+      IMAGE_TAG_VALUE=${{ env.IMAGE_TAG_VALUE }}
+      echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE" >> $GITHUB_OUTPUT
+    shell: bash
     - id: image-tag
       run: |
-        IMAGE_TAG_VALUE=${{ inputs.images }}:${{ env.IMAGE_TAG_VALUE }}
-        echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE" >> $GITHUB_OUTPUT
+        IMAGE_TAG=${{ inputs.images }}:${{ env.IMAGE_TAG_VALUE }}
+        echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
       shell: bash
     - id: random-number-generator
       run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
