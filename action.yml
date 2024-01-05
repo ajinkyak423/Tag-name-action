@@ -1,15 +1,6 @@
 name: 'Image tag'
 description: 'Greet someone'
 inputs:
-  commit-id:
-    description: 'The commit ID.'
-    required: false
-  branch-name:
-    description: 'The branch name.'
-    required: false
-  tag-name:
-    description: 'The tag name.'
-    required: false
   images:
     description: 'The image name.'
     required: false
@@ -35,8 +26,8 @@ runs:
     - id: create-and-process-tag-value
       run: |
         TAG=${{ env.CURRENT_DATE }}-${{ env.SHORT_SHA }}-${{ github.ref_name }}
-        TAG=${TAG:0:63}
         TAG=$(echo "${TAG}" | sed -E  -e 's/-+/-/g' -e 's/_+/_/g' -e 's/[^a-zA-Z0-9._-]//g'  -e 's/[._-]*$//g')
+        TAG=${TAG:0:63}
         echo "TAG=$TAG"
         echo "TAG=$TAG" >> $GITHUB_ENV
       shell: bash
