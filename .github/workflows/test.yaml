@@ -8,6 +8,8 @@ jobs:
       - uses: actions/checkout@v4
       - id: foo
         uses: ajinkyak423/Tag-name-action@v1.4.5
+        with:
+          images: ajinkyak423
       - run: echo image-tag ${{ steps.foo.outputs.image-tag }}
         shell: bash
       - run: echo image-tag-value ${{ steps.foo.outputs.image-tag-value }}
