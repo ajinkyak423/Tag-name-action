@@ -36,7 +36,7 @@ runs:
       run: |
         TAG=${{ env.CURRENT_DATE }}-${{ env.SHORT_SHA }}-${{ github.ref_name }}
         TAG=${TAG:0:63}
-        TAG=$(echo "${TAG}" | sed -E -e 's/-+/-/g' -e 's/_+/_/g' -e 's/[^[:alnum:]]*$//' | tr -d '\@\#\$\%\^\&\*\(\)\{\}\[\]')
+        TAG=$(echo "${TAG}" | sed -E  -e 's/-+/-/g' -e 's/_+/_/g' -e 's/[^a-zA-Z0-9._-]//g'  -e 's/[._-]*$//g')
         echo "TAG=$TAG"
         echo "TAG=$TAG" >> $GITHUB_ENV
       shell: bash
