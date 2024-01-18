@@ -29,7 +29,7 @@ runs:
           type=raw,value={{date 'X'}}-{{sha}}-${{ env.TAG }}
     - id: image-tag-value
       run: |
-        version={{ $steps.docker-meta.outputs.version }}
+        version=${{ steps.docker-meta.outputs.version }}
         tag=${{ steps.docker-meta.outputs.tags }}
         echo "version=$version" >> $GITHUB_OUTPUT
         echo "tag=$tag" >> $GITHUB_OUTPUT
