@@ -1,43 +1,37 @@
 name: 'Image tag'
-description: 'Greet someone'
+description: 'Create image tag and value'
 inputs:
   images:
-    description: 'The image name.'
+    description: 'The image repository name.'
     required: false
 outputs:
-  image-tag:
+  tag:
     description: "Tag string"
-    value: ${{ steps.image-tag.outputs.IMAGE_TAG }}
-  image-tag-value:
+    value: ${{ steps.image-tag-value.outputs.tag }}
+  version:
     description: "Tag value"
-    value: ${{ steps.image-tag-value.outputs.IMAGE_TAG_VALUE }}
+    value: ${{ steps.image-tag-value.outputs.version }}
 runs:
   using: "composite"
   steps:
-    - id: short-commit-id
-      run: |
-        SHORT_SHA=${{ github.sha }}
-        echo "SHORT_SHA=${SHORT_SHA::7}" >> $GITHUB_ENV
-      shell: bash
-    - id: current-date
-      run: |
-        echo "CURRENT_DATE=$(date +'%s')" >> $GITHUB_ENV
-      shell: bash
     - id: create-and-process-tag-value
       run: |
-        TAG=${{ env.CURRENT_DATE }}-${{ env.SHORT_SHA }}-${{ github.ref_name }}
-        TAG=$(echo "${TAG}" | sed -E  -e 's/-+/-/g' -e 's/_+/_/g' -e 's/[^a-zA-Z0-9._-]//g'  -e 's/[._-]*$//g')
-        TAG=${TAG:0:63}
-        echo "TAG=$TAG"
+        TAG=${{ github.ref_name }}
+        TAG=$(echo "${TAG}" | sed -E -e 's/[^a-zA-Z0-9_-]//g' -e 's/-+/-/g' -e 's/_+/_/g' -e 's/[_-]*$//g')
+        TAG=${TAG:0:40}
         echo "TAG=$TAG" >> $GITHUB_ENV
       shell: bash
+    - id: docker-meta
+      uses: docker/metadata-action@v3
+      with:
+        images: ${{ inputs.images }}
+        tags: |
+          type=raw,value={{date 'X'}}-{{sha}}-${{ env.TAG }}
     - id: image-tag-value
       run: |
-        IMAGE_TAG_VALUE=${{ env.TAG }}
-        echo "IMAGE_TAG_VALUE=$IMAGE_TAG_VALUE" >> $GITHUB_OUTPUT
+        version={{ $steps.docker-meta.outputs.version }}
+        tag=${{ steps.docker-meta.outputs.tags }}
+        echo "version=$version" >> $GITHUB_OUTPUT
+        echo "tag=$tag" >> $GITHUB_OUTPUT
       shell: bash
-    - id: image-tag
-      run: |
-        IMAGE_TAG=${{ inputs.images }}:${{ env.TAG }}
-        echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
-      shell: bash
+    
