@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: foo
-        uses: ajinkyak423/Tag-name-action@v1.4.5
+        uses: ajinkyak423/Tag-name-action@tag-name-action
         with:
           images: ajinkyak423
       - run: echo image-tag ${{ steps.foo.outputs.image-tag }}
