@@ -15,12 +15,12 @@ runs:
   using: "composite"
   steps:
     - id: create-and-process-tag-value
+      shell: bash
       run: |
         TAG=${{ github.ref_name }}
         TAG=$(echo "${TAG}" | sed -E -e 's/[^a-zA-Z0-9-]/-/g' -e 's/-+/-/g' -e 's/[-]*$//g')
         TAG=${TAG:0:40}
         echo "TAG=$TAG" >> $GITHUB_ENV
-      shell: bash
     - id: docker-meta
       uses: docker/metadata-action@v3
       with:
@@ -28,7 +28,8 @@ runs:
         tags: |
           type=raw,value={{date 'X'}}-{{sha}}-${{ env.TAG }}
     - id: image-tag-value
+      shell: bash
       run: |
         echo "version=${{ steps.docker-meta.outputs.version }}" >> $GITHUB_OUTPUT
         echo "tag=${{ steps.docker-meta.outputs.tags }}" >> $GITHUB_OUTPUT
-      shell: bash
+      
