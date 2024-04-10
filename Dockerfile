@@ -8,4 +8,4 @@ COPY resource-check.py .
 COPY entrypoint.sh .
 RUN chmod +x /script/entrypoint.sh
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/script/entrypoint.sh"]
