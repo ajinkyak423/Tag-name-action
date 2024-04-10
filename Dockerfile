@@ -8,4 +8,4 @@ COPY resource-check.py .
 COPY entrypoint.sh .
 RUN chmod +x /script/entrypoint.sh
 
-ENTRYPOINT ["python", "/script/resource-check.py", "./input.yaml"]
+ENTRYPOINT ["python", "/script/resource-check.py", "${INPUT_FILE}"]
