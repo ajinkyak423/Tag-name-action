@@ -3,14 +3,14 @@ on: [push]
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
-    name: resource-check
+    name: A job to get image tag
     steps:
       - uses: actions/checkout@v4
-      - name: Check Dir
-        run: |
-         pwd
-         ls -lah
       - id: foo
-        uses: ajinkyak423/Tag-name-action@resource-checking
+        uses: ajinkyak423/Tag-name-action@tag-name-action
         with:
-          file: kubernetes/test.yaml
+          images: ajinkyak423
+      - run: echo image-tag ${{ steps.foo.outputs.image-tag }}
+        shell: bash
+      - run: echo image-tag-value ${{ steps.foo.outputs.image-tag-value }}
+        shell: bash    
