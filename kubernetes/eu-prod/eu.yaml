@@ -1,0 +1,33 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnect
+metadata:
+  name: kafka-connect
+  annotations:
+    strimzi.io/use-connector-resources: "true"
+  namespace: kafka
+spec:
+  replicas: 1
+  resources:
+    requests:
+      memory: 12G
+      cpu: 1000m
+    limits:
+      memory: 18G
+  jvmOptions:
+    -Xmx: "8000M"
+    -Xms: "4000M"      
+  bootstrapServers: prod-kafka-kafka-bootstrap:9092
+  image: us.gcr.io/ridecell-1/data-kafka-connect:1704262939-2d855774-master
+  template:
+    serviceAccount:
+      metadata:
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::439671274615:role/eu-prod-kafka-data-kafka-connect-data
+  externalConfiguration:
+    volumes:
+      - name: eu-prod-elasticsearch-credentials
+        secret:
+          secretName: eu-prod-elasticsearch-credentials
+      - name: eu-prod-elasticsearch-truststore
+        secret:
+          secretName: eu-prod-elasticsearch-truststore

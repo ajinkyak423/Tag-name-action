@@ -7,9 +7,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: foo
-        uses: ajinkyak423/Tag-name-action@tag-name-action
+        uses: ajinkyak423/Tag-name-action@resource-checking
         with:
-          images: ajinkyak423
+          file: kubernetes/test.yaml
       - run: echo image-tag ${{ steps.foo.outputs.image-tag }}
         shell: bash
       - run: echo image-tag-value ${{ steps.foo.outputs.image-tag-value }}
