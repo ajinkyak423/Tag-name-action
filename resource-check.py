@@ -66,9 +66,11 @@ def load_yaml_file(filepath):
             sys.exit(1)
 
 if __name__ == "__main__":
+    print("Checking the resource limits in YAML files...")
     parser = argparse.ArgumentParser(description="Check resource limits in YAML files.")
     parser.add_argument('input', metavar='INPUT', help="YAML file or directory containing YAML files to check")
     args = parser.parse_args()
+    print("Input file/directory:", args.input)
     if os.path.isfile(args.input):
         load_yaml_file(args.input)
     else:
