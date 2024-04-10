@@ -1,37 +1,11 @@
-name: 'Image tag'
-description: 'Create image tag and value'
+name: 'Resource Limit Check'
+description: 'Check resource limits in YAML manifests'
 inputs:
-  images:
-    description: 'The image repository name.'
-    required: false
-outputs:
-  tag:
-    description: "Tag string"
-    value: ${{ steps.image-tag-value.outputs.tag }}
-  version:
-    description: "Tag value"
-    value: ${{ steps.image-tag-value.outputs.version }}
+  file:  
+    description: 'Path to YAML file to check'
+    required: true
 runs:
-  using: "composite"
-  steps:
-    - id: create-and-process-tag-value
-      run: |
-        TAG=${{ github.ref_name }}
-        TAG=$(echo "${TAG}" | sed -E -e 's/[^a-zA-Z0-9_-]//g' -e 's/-+/-/g' -e 's/_+/_/g' -e 's/[_-]*$//g')
-        TAG=${TAG:0:40}
-        echo "TAG=$TAG" >> $GITHUB_ENV
-      shell: bash
-    - id: docker-meta
-      uses: docker/metadata-action@v3
-      with:
-        images: ${{ inputs.images }}
-        tags: |
-          type=raw,value={{date 'X'}}-{{sha}}-${{ env.TAG }}
-    - id: image-tag-value
-      run: |
-        version={{ $steps.docker-meta.outputs.version }}
-        tag=${{ steps.docker-meta.outputs.tags }}
-        echo "version=$version" >> $GITHUB_OUTPUT
-        echo "tag=$tag" >> $GITHUB_OUTPUT
-      shell: bash
-    
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.file }}
