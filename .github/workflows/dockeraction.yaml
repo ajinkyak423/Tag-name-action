@@ -13,4 +13,4 @@ jobs:
       - id: foo
         uses: ajinkyak423/Tag-name-action@resource-checking
         with:
-          file: kubernetes/test.yaml
+          file: "kubernetes/test.yaml"
