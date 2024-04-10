@@ -5,4 +5,4 @@ RUN pip install -r requirements.txt
 
 COPY resource-check.py .
 
-CMD ["python", "script.py", "/input.yaml"]  
+CMD ["python", "resource-check.py", "/input.yaml"]  
