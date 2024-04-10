@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python /app/check_resources.py "$1"
+python /script/resource-check.py "$1"
