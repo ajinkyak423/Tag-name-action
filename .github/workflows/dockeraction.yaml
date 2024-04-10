@@ -13,4 +13,4 @@ jobs:
       - id: foo
         uses: ajinkyak423/Tag-name-action@resource-checking
         with:
-          file: ./eu-prod/actiontest.yaml
+          file: actiontest.yaml
