@@ -14,3 +14,4 @@ jobs:
         uses: ajinkyak423/Tag-name-action@resource-checking
         with:
           file: kubernetes/eu-prod/eu.yaml
+          threshold: 50

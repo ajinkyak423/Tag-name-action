@@ -4,8 +4,13 @@ inputs:
   file:  
     description: 'Path to YAML file to check'
     required: true
+  threshold:
+    description: 'Path to YAML file to check'
+    required: false
+    default: 10
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - ${{ inputs.file }}
+    - ${{ inputs.threshold }}

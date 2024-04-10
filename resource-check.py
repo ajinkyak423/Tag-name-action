@@ -33,7 +33,7 @@ def find_resources(data):
                 return result
     return None
 
-def check_resource_limits_in_doc(data, filepath):
+def check_resource_limits_in_doc(data, filepath, threshold):
     try:
         resources = find_resources(data)
         if resources:
@@ -45,8 +45,8 @@ def check_resource_limits_in_doc(data, filepath):
                 limit_memory = extract_numeric_memory(limit_memory)
 
                 diff_percentage = abs((limit_memory - request_memory) / request_memory) * 100
-                if diff_percentage > 10:
-                    print(f"In file {filepath}, the difference between request and limit memory ({diff_percentage}%) exceeds 10%.")
+                if diff_percentage > threshold:
+                    print(f"In file {filepath}, the difference between request and limit memory ({diff_percentage}%) exceeds {threshold}%.")
                     sys.exit(1)
             else:
                 print(f"Request or limit memory not specified in file {filepath}")
@@ -55,12 +55,12 @@ def check_resource_limits_in_doc(data, filepath):
     except Exception as e:
         print(f"Error processing file {filepath}: {e}")
 
-def load_yaml_file(filepath):
+def load_yaml_file(filepath, threshold):
     with open(filepath, 'r') as file:
         try:
             print("Checking resource limits for file:", filepath)
             for data in yaml.load_all(file):
-                check_resource_limits_in_doc(data, filepath)
+                check_resource_limits_in_doc(data, filepath, threshold)
         except Exception as e:
             print(f"Error loading file {filepath}: {e}")
             sys.exit(1)
@@ -69,11 +69,13 @@ if __name__ == "__main__":
     print("Checking the resource limits in YAML files...")
     parser = argparse.ArgumentParser(description="Check resource limits in YAML files.")
     parser.add_argument('input', metavar='INPUT', help="YAML file to check")
+    parser.add_argument('threshold', metavar='THRESHOLD', type=float, default=10, help="Threshold percentage for the difference between request and limit memory (default: 10)")
     args = parser.parse_args()
     print("Input file:", args.input)
+    print("Threshold percentage:", args.threshold)
     if os.path.isfile(args.input):
-        load_yaml_file(args.input)
+        load_yaml_file(args.input, args.threshold)
     else:
         print(f"Invalid input: {args.input}. YAML file is required.")
         sys.exit(1)
-    print("Resource limits are within 10 percent difference for all YAML files.")
+    print(f"Resource limits are within {args.threshold} percent difference for all YAML files.")
