@@ -6,6 +6,6 @@ RUN pip install -r requirements.txt
 COPY resource-check.py .
 
 COPY entrypoint.sh .
-RUN chmod +x /app/entrypoint.sh
+RUN chmod +x /script/entrypoint.sh
 
 ENTRYPOINT ["/app/entrypoint.sh"]
