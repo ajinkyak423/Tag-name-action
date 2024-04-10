@@ -6,6 +6,10 @@ jobs:
     name: resource-check
     steps:
       - uses: actions/checkout@v4
+      - name: Check Dir
+        run: |
+         pwd
+         ls -lah
       - id: foo
         uses: ajinkyak423/Tag-name-action@resource-checking
         with:
