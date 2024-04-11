@@ -15,4 +15,5 @@ jobs:
 
       - name: Test
         run: |       
+          kustomize version
           kustomize build --help
