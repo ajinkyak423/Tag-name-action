@@ -1,8 +1,8 @@
-name: 'Image tag'
-description: 'Create image tag and value'
+name: 'Install Kustomize Action'
+description: 'Installs Kustomize (Default v5.4.1)'
 inputs:
   version:
-    description: "Tag string"
+    description: "Kustomize version to be installed"
     required: false
     default: 5.4.1
 runs:
