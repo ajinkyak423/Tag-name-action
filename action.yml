@@ -5,6 +5,9 @@ inputs:
     description: "Kustomize version to be installed"
     required: false
     default: 5.4.1
+  condition:
+    description: "Kustomize version to be installed"
+    required: false
 runs:
   using: "composite"
   steps:
@@ -12,4 +15,9 @@ runs:
       run: |
           wget -qO-  https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${{ inputs.version }}/kustomize_v${{ inputs.version }}_linux_amd64.tar.gz | tar -xvzf - && sudo mv kustomize /usr/local/bin/
       shell: bash
-    
+    - id: condition
+      if: ${{ inputs.condition }}
+      shell: bash
+      run: |
+        echo "hii"
+        kustomize version
