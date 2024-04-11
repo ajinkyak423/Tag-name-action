@@ -1,37 +1,15 @@
 name: 'Image tag'
 description: 'Create image tag and value'
 inputs:
-  images:
-    description: 'The image repository name.'
-    required: false
-outputs:
-  tag:
-    description: "Tag string"
-    value: ${{ steps.image-tag-value.outputs.tag }}
   version:
-    description: "Tag value"
-    value: ${{ steps.image-tag-value.outputs.version }}
+    description: "Tag string"
+    required: false
+    default: 5.4.1
 runs:
   using: "composite"
   steps:
     - id: create-and-process-tag-value
       run: |
-        TAG=${{ github.ref_name }}
-        TAG=$(echo "${TAG}" | sed -E -e 's/[^a-zA-Z0-9_-]//g' -e 's/-+/-/g' -e 's/_+/_/g' -e 's/[_-]*$//g')
-        TAG=${TAG:0:40}
-        echo "TAG=$TAG" >> $GITHUB_ENV
-      shell: bash
-    - id: docker-meta
-      uses: docker/metadata-action@v3
-      with:
-        images: ${{ inputs.images }}
-        tags: |
-          type=raw,value={{date 'X'}}-{{sha}}-${{ env.TAG }}
-    - id: image-tag-value
-      run: |
-        version={{ $steps.docker-meta.outputs.version }}
-        tag=${{ steps.docker-meta.outputs.tags }}
-        echo "version=$version" >> $GITHUB_OUTPUT
-        echo "tag=$tag" >> $GITHUB_OUTPUT
+          wget -qO-  https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${{ inputs.version }}/kustomize_v${{ inputs.version }}_linux_amd64.tar.gz | tar -xvzf - && sudo mv kustomize /usr/local/bin/
       shell: bash
     
