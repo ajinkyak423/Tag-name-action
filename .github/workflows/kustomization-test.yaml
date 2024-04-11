@@ -12,6 +12,8 @@ jobs:
 
       - name: Install prerequisites
         uses: ajinkyak423/Tag-name-action@kustomization
+        with:
+            version: 5.0.0
 
       - name: Test
         run: |       
