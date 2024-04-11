@@ -18,6 +18,4 @@ runs:
     - id: condition
       if: ${{ inputs.condition }}
       shell: bash
-      run: |
-        echo "hii"
-        kustomize version
+      uses: actions/checkout@v4
