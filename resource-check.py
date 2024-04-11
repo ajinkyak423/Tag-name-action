@@ -26,43 +26,52 @@ def extract_numeric_memory(memory_str):
 def find_resources(data):
     if isinstance(data, dict):
         if 'resources' in data:
-            return data['resources']
+            if isinstance(data['resources'], dict):
+                return data['resources']
         for value in data.values():
             result = find_resources(value)
             if result:
                 return result
+    elif isinstance(data, list):
+        for item in data:
+            result = find_resources(item)
+            if result:
+                return result
     return None
 
-def check_resource_limits_in_doc(data, filepath, threshold):
+def check_resource_limits_in_doc(data, threshold):
     try:
         resources = find_resources(data)
         if resources:
+
             request_memory = resources.get('requests', {}).get('memory')
             limit_memory = resources.get('limits', {}).get('memory')
             
             if request_memory and limit_memory:
+                namespace = data.get('metadata', {}).get('namespace')
+                name = data.get('metadata', {}).get('name')
+                print(f"::debug:: Resources found in Object Name: {name}, Namespace: {namespace}, Request Memory: {request_memory}, Limit Memory: {limit_memory}")
                 request_memory_bytes = extract_numeric_memory(request_memory)
                 limit_memory_bytes = extract_numeric_memory(limit_memory)
 
                 diff_percentage = abs((limit_memory_bytes - request_memory_bytes) / request_memory_bytes) * 100
                 if diff_percentage > threshold:
-                    namespace = data.get('metadata', {}).get('namespace')
-                    name = data.get('metadata', {}).get('name')
-                    print(f"::ERROR:: Object Name: {name}, Namespace: {namespace}, Difference Percentage: {diff_percentage}%, Threshold: {threshold}")
+                    print(f"::ERROR:: Object Name: {name}, Namespace: {namespace}, Difference: {diff_percentage}%, Threshold: {threshold}%")
                     print(f"::ERROR:: Request Memory: {request_memory}, Limit Memory: {limit_memory}")
                     print("::warning:: Formula used for calculating difference percentage: |Limit Memory - Request Memory| / Request Memory * 100")
                     sys.exit(1)
             else:
-                print(f"Request or limit memory not specified in file {filepath}")
+                print(f"Request or limit memory not specified in document {data}")
     except Exception as e:
-        print(f"::Error:: processing file {filepath}: {e}")
+        print(f"::Error:: processing document: {data} : {e}")
+        
 
 def load_yaml_file(filepath, threshold):
     with open(filepath, 'r') as file:
         try:
             print("Checking resource limits for file:", filepath)
             for data in yaml.load_all(file):
-                check_resource_limits_in_doc(data, filepath, threshold)
+                check_resource_limits_in_doc(data, threshold)
         except Exception as e:
             print(f"::Error:: loading file {filepath}: {e}")
             sys.exit(1)
