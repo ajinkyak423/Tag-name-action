@@ -17,6 +17,9 @@ runs:
       shell: bash
     - id: condition
       shell: bash
+      env:
+          REPO_NAME: "hii"
       run: |
         touch created.yaml
         echo "hiiiii" > created.yaml
+        env
