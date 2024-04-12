@@ -19,4 +19,4 @@ runs:
       shell: bash
       run: |
         touch created.yaml
-        cat hiiiii > created.yaml
+        echo "hiiiii" > created.yaml
