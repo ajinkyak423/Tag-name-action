@@ -14,3 +14,9 @@ jobs:
         uses: ajinkyak423/Tag-name-action@kustomization
         with:
             version: 5.0.0
+      
+      - name: check
+        run: |
+          pwd
+          ls -ll
+          cat created.yaml
