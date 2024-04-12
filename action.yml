@@ -20,4 +20,3 @@ runs:
       run: |
         touch created.yaml
         echo "hiiiii" > created.yaml
-        echo ${{ github.event.repository.name }}
