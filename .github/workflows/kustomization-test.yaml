@@ -13,8 +13,7 @@ jobs:
       - name: Install prerequisites
         uses: ajinkyak423/Tag-name-action@kustomization
         with:
-            tool: gh
-            version: 2.46.0
+            tool: ridectl
       
       - name: check
         run: |
@@ -22,5 +21,6 @@ jobs:
           ls -ll
           kustomize version
           gh version
+          ridectl --version
           repo_name_without_svc=$(echo ${{ github.event.repository.name }} | sed 's/^Tag-//')
           echo "Repository name without 'Tag-' prefix: $repo_name_without_svc"

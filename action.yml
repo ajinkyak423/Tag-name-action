@@ -37,17 +37,23 @@ runs:
       shell: bash
       id: install-gh
       run: |
-        version=${{ inputs.version }}
+        mkdir -p -m 755 /etc/apt/keyrings && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+        && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+        && apt update \
+        && apt install gh -y
+
+    - name: Install ridectl
+      if: ${{ inputs.tool == 'ridectl' }}
+      shell: bash
+      id: install-ridectl
+      run: |
+        version="${{ inputs.version }}"
         if [ -z "$version" ]; then
-          echo "No input version provided. Using default version 2.47.0."
-          version=2.47.0
+          echo "No input version provided. Using default version 0.3.2."
+          version="0.3.2"
         fi
-        sudo mkdir -p -m 755 /etc/apt/keyrings && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-        && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-        && sudo echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-        && sudo apt update \
-        && sudo apt install gh=${version} -y
-        if [ $? -ne 0 ]; then
-          echo "Failed to install gh."
-          exit 1
-        fi
+        curl -L "https://github.com/Ridecell/ridectl/releases/download/v${version}-alpha.1/ridectl_linux.zip" -o ./ridectl_linux.zip
+        sudo unzip ridectl_linux.zip && sudo cp ridectl /usr/local/bin/ridectl
+    
+     
