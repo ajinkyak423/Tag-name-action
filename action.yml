@@ -18,7 +18,7 @@ runs:
 
     - name: Install Tools
       run: |
-        tools_with_versions=("${{fromJson(inputs.tools)}}")
+        tools_with_versions=("${{ inputs.tools }}")
         for tool_with_version in "${tools_with_versions[@]}"; do
           tool=$(echo "$tool_with_version" | cut -d':' -f1)
           version=$(echo "$tool_with_version" | cut -d':' -f2)
