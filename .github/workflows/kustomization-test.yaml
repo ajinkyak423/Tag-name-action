@@ -14,7 +14,6 @@ jobs:
         uses: ajinkyak423/Tag-name-action@kustomization
         with:
             tool: kustomize
-            version: 5.0.0
       
       - name: check
         run: |
