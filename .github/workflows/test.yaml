@@ -7,10 +7,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: foo
-        uses: ajinkyak423/Tag-name-action@tag-name-action
-        with:
-          images: ajinkyak423
-      - run: echo image-tag ${{ steps.foo.outputs.image-tag }}
-        shell: bash
-      - run: echo image-tag-value ${{ steps.foo.outputs.image-tag-value }}
-        shell: bash    
+        uses: ajinkyak423/Tag-name-action@kustomization
