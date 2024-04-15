@@ -16,7 +16,17 @@ runs:
       id: install-kustomize
       run: |
         version="${{ inputs.version || '5.4.1' }}"
-        wget -qO- "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv$version/kustomize_v$version_linux_amd64.tar.gz" | tar -xvzf - && sudo mv kustomize /usr/local/bin/
+        wget -qO /tmp/kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${{ version }}/kustomize_v${{ version }}_linux_amd64.tar.gz"
+        if [ $? -ne 0 ]; then
+          echo "Failed to download kustomize."
+          exit 1
+        fi
+        tar -xvzf /tmp/kustomize.tar.gz -C /tmp/
+        if [ $? -ne 0 ]; then
+          echo "Failed to extract kustomize."
+          exit 1
+        fi
+        sudo mv /tmp/kustomize /usr/local/bin/
 
     - name: Install gh
       if: ${{ inputs.tool == 'gh' }}
@@ -25,8 +35,13 @@ runs:
       run: |
         version="${{ inputs.version || '2.47.0' }}"
         arch=$(uname -m)
-        mkdir -p -m 755 /etc/apt/keyrings && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-        && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-        && echo "deb [arch=$arch signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-        && apt update \
-        && apt install gh="$version" -y
+        wget -qO /tmp/gh.deb https://github.com/cli/cli/releases/download/v$version/gh_$version_linux_$arch.deb
+        if [ $? -ne 0 ]; then
+          echo "Failed to download gh."
+          exit 1
+        fi
+        sudo dpkg -i /tmp/gh.deb
+        if [ $? -ne 0 ]; then
+          echo "Failed to install gh."
+          exit 1
+        fi
