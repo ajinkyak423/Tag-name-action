@@ -1,5 +1,5 @@
 name: Kustomize_test
-on: 
+on:
   push:
   
 jobs:
@@ -13,7 +13,7 @@ jobs:
       - name: Install prerequisites
         uses: ajinkyak423/Tag-name-action@kustomization
         with:
-            tools: '["kustomize", "ridectl"]'
+          tools: '["kustomize:3.2.1", "ridectl:0.3.2"]' # Specify the versions for each tool
       
       - name: check
         run: |
