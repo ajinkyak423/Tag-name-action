@@ -37,14 +37,16 @@ runs:
       shell: bash
       id: install-gh
       run: |
-        version="${{ inputs.version || '2.47.0' }}"
-        arch=$(uname -m)
-        wget -qO /tmp/gh.deb https://github.com/cli/cli/releases/download/v$version/gh_$version_linux_$arch.deb
-        if [ $? -ne 0 ]; then
-          echo "Failed to download gh."
-          exit 1
+        version="${{ inputs.version }}"
+        if [ -z "$version" ]; then
+          echo "No input version provided. Using default version 2.47.0."
+          version="2.47.0"
         fi
-        sudo dpkg -i /tmp/gh.deb
+        mkdir -p -m 755 /etc/apt/keyrings && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+        && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+        && apt update \
+        && apt install gh=${version} -y
         if [ $? -ne 0 ]; then
           echo "Failed to install gh."
           exit 1
