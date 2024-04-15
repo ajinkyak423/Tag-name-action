@@ -13,7 +13,7 @@ jobs:
       - name: Install prerequisites
         uses: ajinkyak423/Tag-name-action@kustomization
         with:
-          tools: '["kustomize:3.2.1", "ridectl:0.3.2"]' 
+          tools: ["kustomize:3.2.1", "ridectl:0.3.2"]
       
       - name: check
         run: |
