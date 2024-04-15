@@ -15,7 +15,7 @@ runs:
       shell: bash
       id: create-and-process-tag-value
       run: |
-        if ${{ inputs.version }}; then
+        if [ "${{ inputs.version }}" != "" ]; then
           version="${{ inputs.version }}"
         else
           version="5.4.1"
@@ -26,7 +26,7 @@ runs:
       if: ${{ inputs.tool == 'gh' }}
       shell: bash
       run: |
-        if ${{ inputs.version }}; then
+        if [ "${{ inputs.version }}" != "" ]; then
           version="${{ inputs.version }}"
         else
           version="2.47.0"
