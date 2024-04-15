@@ -21,7 +21,7 @@ runs:
         IFS=$'\n' # Set internal field separator to newline
         for tool_with_version in ${{ inputs.tools }}; do
           tool=$(echo "$tool_with_version" | cut -d':' -f1)
-          version=$(echo "$tool_with_version" | cut -d':' -f2)
+          version=$(echo "$tool_with_version" | cut -d':' -f2-)
           case "$tool" in
             kustomize)
               if [ -z "$version" ]; then
