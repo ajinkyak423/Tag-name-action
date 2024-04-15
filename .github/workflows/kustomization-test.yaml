@@ -14,6 +14,7 @@ jobs:
         uses: ajinkyak423/Tag-name-action@kustomization
         with:
             tool: gh
+            version: 2.46.0
       
       - name: check
         run: |
