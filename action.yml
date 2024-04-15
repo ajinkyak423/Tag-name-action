@@ -2,15 +2,15 @@ name: 'Install Multiple Tools Action'
 description: 'Installs multiple tools'
 inputs:
   tools:
-    description: 'List of tools to install'
+    description: 'List of tools to install with versions'
     required: true
-    default: "[]"
+    default: ""
 runs:
   using: "composite"
   steps:
     - name: Check if tools list is provided
       run: |
-        if [ "${{ inputs.tools }}" == "[]" ]; then
+        if [ -z "${{ inputs.tools }}" ]; then
           echo "No tools provided to install."
           exit 1
         fi
@@ -18,14 +18,14 @@ runs:
 
     - name: Install Tools
       run: |
-        tools_with_versions=("${{ inputs.tools }}")
-        for tool_with_version in "${tools_with_versions[@]}"; do
+        IFS=$'\n' # Set internal field separator to newline
+        for tool_with_version in ${{ inputs.tools }}; do
           tool=$(echo "$tool_with_version" | cut -d':' -f1)
           version=$(echo "$tool_with_version" | cut -d':' -f2)
           case "$tool" in
             kustomize)
               if [ -z "$version" ]; then
-                echo "No input version provided. Using default version 5.4.1."
+                echo "No input version provided for kustomize. Using default version 5.4.1."
                 version="5.4.1"
               fi
               wget -qO /tmp/kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${version}/kustomize_v${version}_linux_amd64.tar.gz"
@@ -42,24 +42,15 @@ runs:
               ;;
             gh)
               # Install gh
-              mkdir -p -m 755 /etc/apt/keyrings && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-              && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-              && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-              && apt update \
-              && apt install gh -y
+              # Script for installing gh
               ;;
             ridectl)
               # Install ridectl
-              if [ -z "$version" ]; then
-                echo "No input version provided. Using default version 0.3.2."
-                version="0.3.2"
-              fi
-              curl -L "https://github.com/Ridecell/ridectl/releases/download/v${version}-alpha.1/ridectl_linux.zip" -o ./ridectl_linux.zip
-              sudo unzip ridectl_linux.zip && sudo cp ridectl /usr/local/bin/ridectl
+              # Script for installing ridectl
               ;;
             helm)
               # Install helm
-              curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+              # Script for installing helm
               ;;
             *)
               echo "Unsupported tool: $tool"
