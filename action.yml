@@ -20,42 +20,43 @@ runs:
       run: |
         IFS=',' read -ra TOOLS <<< ${{ inputs.tools }}
         for tool_with_version in "${TOOLS[@]}" ; do
-          tool=$(echo "$tool_with_version" | cut -d':' -f1)
-          version=$(echo "$tool_with_version" | cut -d':' -f2-)
-          case "$tool" in
-            kustomize)
-              if [ -z "$version" ]; then
-                echo "No input version provided for kustomize. Using default version 5.4.1."
-                version="5.4.1"
-              fi
-              wget -qO /tmp/kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${version}/kustomize_v${version}_linux_amd64.tar.gz"
-              if [ $? -ne 0 ]; then
-                echo "Failed to download kustomize."
-                exit 1
-              fi
-              tar -xvzf /tmp/kustomize.tar.gz -C /tmp/
-              if [ $? -ne 0 ]; then
-                echo "Failed to extract kustomize."
-                exit 1
-              fi
-              sudo mv /tmp/kustomize /usr/local/bin/
-              ;;
-            gh)
-              # Install gh
-              # Script for installing gh
-              ;;
-            ridectl)
-              # Install ridectl
-              # Script for installing ridectl
-              ;;
-            helm)
-              # Install helm
-              # Script for installing helm
-              ;;
-            *)
-              echo "Unsupported tool: $tool"
-              exit 1
-              ;;
+          echo "tool_with_version=$tool_with_version"
+          # tool=$(echo "$tool_with_version" | cut -d':' -f1)
+          # version=$(echo "$tool_with_version" | cut -d':' -f2-)
+          # case "$tool" in
+          #   kustomize)
+          #     if [ -z "$version" ]; then
+          #       echo "No input version provided for kustomize. Using default version 5.4.1."
+          #       version="5.4.1"
+          #     fi
+          #     wget -qO /tmp/kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${version}/kustomize_v${version}_linux_amd64.tar.gz"
+          #     if [ $? -ne 0 ]; then
+          #       echo "Failed to download kustomize."
+          #       exit 1
+          #     fi
+          #     tar -xvzf /tmp/kustomize.tar.gz -C /tmp/
+          #     if [ $? -ne 0 ]; then
+          #       echo "Failed to extract kustomize."
+          #       exit 1
+          #     fi
+          #     sudo mv /tmp/kustomize /usr/local/bin/
+          #     ;;
+          #   gh)
+          #     # Install gh
+          #     # Script for installing gh
+          #     ;;
+          #   ridectl)
+          #     # Install ridectl
+          #     # Script for installing ridectl
+          #     ;;
+          #   helm)
+          #     # Install helm
+          #     # Script for installing helm
+          #     ;;
+          #   *)
+          #     echo "Unsupported tool: $tool"
+          #     exit 1
+          #     ;;
           esac
         done
       shell: bash
