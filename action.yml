@@ -16,9 +16,9 @@ runs:
       id: create-and-process-tag-value
       run: |
         if [ "${{ inputs.version }}" != "" ]; then
-          version="${{ inputs.version }}"
+          version=${{ inputs.version }}
         else
-          version="5.4.1"
+          version=5.4.1
         fi
         wget -qO- https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv$version/kustomize_v$version_linux_amd64.tar.gz | tar -xvzf - && sudo mv kustomize /usr/local/bin/
 
