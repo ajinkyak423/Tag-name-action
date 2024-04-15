@@ -18,7 +18,7 @@ runs:
 
     - name: Install Tools
       run: |
-        IFS=',' read -ra TOOLS <<< "${{ inputs.tools }}"
+        IFS=',' read -ra TOOLS <<< ${{ inputs.tools }}
         for tool_with_version in "${TOOLS[@]}" ; do
           tool=$(echo "$tool_with_version" | cut -d':' -f1)
           version=$(echo "$tool_with_version" | cut -d':' -f2-)
