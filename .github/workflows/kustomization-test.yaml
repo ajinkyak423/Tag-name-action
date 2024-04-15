@@ -20,6 +20,6 @@ jobs:
         run: |
           pwd
           ls -ll
-          cat created.yaml
+          kustomize version
           repo_name_without_svc=$(echo ${{ github.event.repository.name }} | sed 's/^Tag-//')
           echo "Repository name without 'Tag-' prefix: $repo_name_without_svc"
