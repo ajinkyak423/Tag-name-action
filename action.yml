@@ -15,8 +15,12 @@ runs:
       shell: bash
       id: install-kustomize
       run: |
-        version="${{ inputs.version || '5.4.1' }}"
-        wget -qO /tmp/kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${{ version }}/kustomize_v${{ version }}_linux_amd64.tar.gz"
+        version="${{ inputs.version }}"
+        if [ -z "$version" ]; then
+          echo "No input version provided. Using default version 5.4.1."
+          version="5.4.1"
+        fi
+        wget -qO /tmp/kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${version}/kustomize_v${version}_linux_amd64.tar.gz"
         if [ $? -ne 0 ]; then
           echo "Failed to download kustomize."
           exit 1
