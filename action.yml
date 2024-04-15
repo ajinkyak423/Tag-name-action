@@ -1,59 +1,70 @@
-name: 'Install Dependencies Action'
-description: 'Installs Dependencies'
+name: 'Install Multiple Tools Action'
+description: 'Installs multiple tools'
 inputs:
-  tool:
-    description: 'Tool to install'
+  tools:
+    description: 'List of tools to install'
     required: true
-  version:
-    description: "Version to be installed"
-    required: false
+    default: "[]"
 runs:
   using: "composite"
   steps:
-    - name: Install Kustomize
-      if: ${{ inputs.tool == 'kustomize' }} 
-      shell: bash
-      id: install-kustomize
+    - name: Check if tools list is provided
       run: |
-        version="${{ inputs.version }}"
-        if [ -z "$version" ]; then
-          echo "No input version provided. Using default version 5.4.1."
-          version="5.4.1"
-        fi
-        wget -qO /tmp/kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${version}/kustomize_v${version}_linux_amd64.tar.gz"
-        if [ $? -ne 0 ]; then
-          echo "Failed to download kustomize."
+        if [ "${{ inputs.tools }}" == "[]" ]; then
+          echo "No tools provided to install."
           exit 1
         fi
-        tar -xvzf /tmp/kustomize.tar.gz -C /tmp/
-        if [ $? -ne 0 ]; then
-          echo "Failed to extract kustomize."
-          exit 1
-        fi
-        sudo mv /tmp/kustomize /usr/local/bin/
-
-    - name: Install gh
-      if: ${{ inputs.tool == 'gh' }}
       shell: bash
-      id: install-gh
-      run: |
-        mkdir -p -m 755 /etc/apt/keyrings && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-        && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-        && apt update \
-        && apt install gh -y
 
-    - name: Install ridectl
-      if: ${{ inputs.tool == 'ridectl' }}
-      shell: bash
-      id: install-ridectl
+    - name: Install Tools
       run: |
-        version="${{ inputs.version }}"
-        if [ -z "$version" ]; then
-          echo "No input version provided. Using default version 0.3.2."
-          version="0.3.2"
-        fi
-        curl -L "https://github.com/Ridecell/ridectl/releases/download/v${version}-alpha.1/ridectl_linux.zip" -o ./ridectl_linux.zip
-        sudo unzip ridectl_linux.zip && sudo cp ridectl /usr/local/bin/ridectl
-    
-     
+        tools_with_versions=("${{fromJson(inputs.tools)}}")
+        for tool_with_version in "${tools_with_versions[@]}"; do
+          tool=$(echo "$tool_with_version" | cut -d':' -f1)
+          version=$(echo "$tool_with_version" | cut -d':' -f2)
+          case "$tool" in
+            kustomize)
+              if [ -z "$version" ]; then
+                echo "No input version provided. Using default version 5.4.1."
+                version="5.4.1"
+              fi
+              wget -qO /tmp/kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${version}/kustomize_v${version}_linux_amd64.tar.gz"
+              if [ $? -ne 0 ]; then
+                echo "Failed to download kustomize."
+                exit 1
+              fi
+              tar -xvzf /tmp/kustomize.tar.gz -C /tmp/
+              if [ $? -ne 0 ]; then
+                echo "Failed to extract kustomize."
+                exit 1
+              fi
+              sudo mv /tmp/kustomize /usr/local/bin/
+              ;;
+            gh)
+              # Install gh
+              mkdir -p -m 755 /etc/apt/keyrings && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+              && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+              && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+              && apt update \
+              && apt install gh -y
+              ;;
+            ridectl)
+              # Install ridectl
+              if [ -z "$version" ]; then
+                echo "No input version provided. Using default version 0.3.2."
+                version="0.3.2"
+              fi
+              curl -L "https://github.com/Ridecell/ridectl/releases/download/v${version}-alpha.1/ridectl_linux.zip" -o ./ridectl_linux.zip
+              sudo unzip ridectl_linux.zip && sudo cp ridectl /usr/local/bin/ridectl
+              ;;
+            helm)
+              # Install helm
+              curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+              ;;
+            *)
+              echo "Unsupported tool: $tool"
+              exit 1
+              ;;
+          esac
+        done
+      shell: bash
