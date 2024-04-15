@@ -1,39 +1,38 @@
-name: 'Install Kustomize Action'
-description: 'Installs Kustomize (Default v5.4.1)'
+name: 'Install Dependancies Action'
+description: 'Installs Dependancies'
 inputs:
+  tool:
+    description: 'Tool to install'
+    required: true
   version:
-    description: "Kustomize version to be installed"
-    required: false
-    default: 5.4.1
-  condition:
     description: "Kustomize version to be installed"
     required: false
 runs:
   using: "composite"
   steps:
-    - id: create-and-process-tag-value
+    - name: Install Kustomize
+      if: ${{ inputs.tool == 'kustomize' }} 
+      shell: bash
+      id: create-and-process-tag-value
       run: |
-          wget -qO-  https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${{ inputs.version }}/kustomize_v${{ inputs.version }}_linux_amd64.tar.gz | tar -xvzf - && sudo mv kustomize /usr/local/bin/
+        if ${{ inputs.version }}; then
+          version="${{ inputs.version }}"
+        else
+          version="5.4.1"
+        fi
+        wget -qO- https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv$version/kustomize_v$version_linux_amd64.tar.gz | tar -xvzf - && sudo mv kustomize /usr/local/bin/
+
+    - name: Install gh
+      if: ${{ inputs.tool == 'gh' }}
       shell: bash
-    - id: condition
-      shell: bash
-      env:
-          REPO_NAME: "hii"
       run: |
-        touch created.yaml
-        echo "hiiiii" > created.yaml
-        env
-
-    - name: Set GitHub Path
-      run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
-      shell: bash
-      env:
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
-    
-    - name: ls
-      run: ls
-      shell: bash
-
-    - name: Run goodbye.sh
-      run: temp.sh
-      shell: bash
+        if ${{ inputs.version }}; then
+          version="${{ inputs.version }}"
+        else
+          version="2.47.0"
+        fi
+        mkdir -p -m 755 /etc/apt/keyrings && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+        && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+        && apt update \
+        && apt install gh=${{ inputs.version }} -y
