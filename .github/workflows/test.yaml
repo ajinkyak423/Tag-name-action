@@ -15,3 +15,4 @@ jobs:
           ls -l ${{ steps.foo.outputs.file_path }}
           cat ${{ steps.foo.outputs.file_path }}
         shell: bash
+        
