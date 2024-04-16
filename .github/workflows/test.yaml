@@ -9,7 +9,11 @@ jobs:
       - id: foo
         uses: ajinkyak423/Tag-name-action@kustomization
         
-      - run: echo "${{ steps.foo.outputs.file_path }}"
+      - name: Echo File Path
+        run: |
+          echo "File Path: ${{ steps.foo.outputs.file_path }}"
         shell: bash
-      - run: cat ${{ steps.foo.outputs.file_path }}
-        shell: bash   
+        
+      - name: Display File Contents
+        run: cat "${{ steps.foo.outputs.file_path }}"
+        shell: bash
