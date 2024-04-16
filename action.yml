@@ -3,7 +3,7 @@ description: 'Installs multiple tools'
 outputs:
   file_path:
     description: "Random number"
-    value: ${{ steps.file_path-generator.outputs.file_path }}
+    value: ${{ steps.file_path.outputs.file_path }}
 runs:
   using: "composite"
   steps:
