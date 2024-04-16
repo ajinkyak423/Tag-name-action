@@ -10,5 +10,5 @@ runs:
   steps:
     - name: Install Tools
       run: |
-        echo "this is created by action" >> action.yaml
+        echo "this is created by action" >> actions_created.yaml
       shell: bash
