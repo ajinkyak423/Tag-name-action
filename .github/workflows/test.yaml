@@ -12,5 +12,5 @@ jobs:
           tools: ajinkyak423
       - run: ls -ll
         shell: bash
-      - run: cat actions.yaml 
+      - run: cat actions_created.yaml 
         shell: bash    
