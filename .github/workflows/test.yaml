@@ -8,9 +8,8 @@ jobs:
       - uses: actions/checkout@v4
       - id: foo
         uses: ajinkyak423/Tag-name-action@kustomization
-        with:
-          tools: ajinkyak423
-      - run: ls -ll
+        
+      - run: echo ${{ steps.foo.outputs.file-path }}
         shell: bash
       - run: cat actions_created.yaml 
         shell: bash    
