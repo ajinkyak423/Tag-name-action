@@ -17,5 +17,5 @@ runs:
         file_path="actions_created.yaml"
         cat fileinworkflow.txt
         echo "File Path set to: $file_path"
-        echo "file_path=$file_path" >> $GITHUB_OUTPUT
+        echo "file_path=actions_created.yaml" >> $GITHUB_OUTPUT
       shell: bash
