@@ -1,10 +1,9 @@
 name: 'Install Multiple Tools Action'
 description: 'Installs multiple tools'
-inputs:
-  tools:
-    description: 'List of tools to install with versions'
-    required: true
-    default: ""
+outputs:
+  file-path:
+    description: "Random number"
+    value: ${{ steps.file-path-generator.outputs.file-path }}
 runs:
   using: "composite"
   steps:
@@ -12,3 +11,7 @@ runs:
       run: |
         echo "this is created by action" >> actions_created.yaml
       shell: bash
+    - name: Give file path
+      id: file-path
+      run: |
+        echo "file-path=actions_created.yaml" >> $GITHUB_OUTPUT
