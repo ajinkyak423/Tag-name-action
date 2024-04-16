@@ -15,5 +15,6 @@ runs:
       id: file_path
       run: |
         file_path="actions_created.yaml"
+        echo "File Path set to: $file_path"
         echo "file_path=$file_path" >> $GITHUB_OUTPUT
       shell: bash
