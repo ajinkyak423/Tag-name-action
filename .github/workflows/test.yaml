@@ -12,4 +12,4 @@ jobs:
       - run: echo "${{ steps.foo.outputs.file-path }}"
         shell: bash
       - run: cat actions_created.yaml 
-        shell: bash    
+        shell: bash   
