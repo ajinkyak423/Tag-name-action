@@ -14,5 +14,6 @@ runs:
     - name: Give file path
       id: file-path
       run: |
-        echo "file-path=$(echo "actions_created.yaml")" >> $GITHUB_OUTPUT
+        file_path="actions_created.yaml"
+        echo "file-path=$file_path >> $GITHUB_OUTPUT
       shell: bash
