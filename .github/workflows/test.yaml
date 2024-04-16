@@ -9,7 +9,7 @@ jobs:
       - id: foo
         uses: ajinkyak423/Tag-name-action@kustomization
         
-      - run: echo "${{ steps.foo.outputs.file-path }}"
+      - run: echo "${{ steps.foo.outputs.file_path }}"
         shell: bash
-      - run: cat actions_created.yaml 
+      - run: cat ${{ steps.foo.outputs.file_path }}
         shell: bash   
