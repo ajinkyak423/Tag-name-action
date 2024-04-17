@@ -14,5 +14,6 @@ jobs:
           echo "Output Path: ${{ steps.foo.outputs.file_path }}"
           ls -l ${{ steps.foo.outputs.file_path }}
           cat ${{ steps.foo.outputs.file_path }}
+          ridectl --version 
         shell: bash
         
