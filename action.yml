@@ -19,8 +19,9 @@ runs:
         echo "File Path set to: $file_path"
         echo "file_path=actions_created.yaml" >> $GITHUB_OUTPUT
         echo ""
-        echo ${{ github.action_path }}
-        echo ${GITHUB_WORKSPACE}
+        echo "github.action_path=${{ github.action_path }}"
+        echo "GITHUB_WORKSPACE=${GITHUB_WORKSPACE}"
+        echo "GITHUB_ACTION_PATH=${GITHUB_ACTION_PATH}"
         pwd
       shell: bash
     # - name: install ridectl
