@@ -21,6 +21,7 @@ runs:
         echo ""
         echo ${{ github.action_path }}
         echo ${GITHUB_WORKSPACE}
+        pwd
       shell: bash
     # - name: install ridectl
     #   id: ridectl
