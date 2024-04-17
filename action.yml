@@ -22,6 +22,7 @@ runs:
         echo "github.action_path=${{ github.action_path }}"
         echo "GITHUB_WORKSPACE=${GITHUB_WORKSPACE}"
         echo "GITHUB_ACTION_PATH=${GITHUB_ACTION_PATH}"
+        echo "GITHUB_PATH=$GITHUB_PATH"
         pwd
       shell: bash
     # - name: install ridectl
