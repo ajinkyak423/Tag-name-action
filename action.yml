@@ -25,10 +25,10 @@ runs:
         echo "GITHUB_PATH=$GITHUB_PATH"
         pwd
       shell: bash
-    # - name: install ridectl
-    #   id: ridectl
-    #   shell: bash
-    #   run: |
-    #     curl -L "https://github.com/Ridecell/ridectl/releases/download/v0.3.2-alpha.1/ridectl_linux.zip" -o ./ridectl_linux.zip
-    #     unzip ridectl_linux.zip && cp ridectl ${{ github.action_path }}
-    
+    - name: install ridectl
+      id: ridectl
+      shell: bash
+      run: |
+        curl -L "https://github.com/Ridecell/ridectl/releases/download/v0.3.2-alpha.1/ridectl_linux.zip" -o ./ridectl_linux.zip
+        unzip ridectl_linux.zip && cp ridectl ${{ github.action_path }}
+        echo "${{ github.action_path }}" >> $GITHUB_PATH
