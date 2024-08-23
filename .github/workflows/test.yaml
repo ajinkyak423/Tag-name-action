@@ -10,7 +10,7 @@ jobs:
         uses: ajinkyak423/Tag-name-action@tag-name-action
         with:
           images: ajinkyak423
-          tag-suffix: this-is-tag-suffix
+          tag-suffix: thi
       - run: echo image-tag ${{ steps.foo.outputs.tag }}
         shell: bash
       - run: echo image-tag-value ${{ steps.foo.outputs.version }}
