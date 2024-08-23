@@ -15,3 +15,5 @@ jobs:
         shell: bash
       - run: echo image-tag-value ${{ steps.foo.outputs.version }}
         shell: bash    
+
+        
