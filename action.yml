@@ -1,9 +1,12 @@
 name: 'Image tag'
-description: 'Create image tag and value'
+description: 'Create image tag and version'
 inputs:
   images:
     description: 'The image repository name.'
-    required: false
+    required: True
+  tag-suffix:
+    description: 'Add suffix to the tag'
+    required: False
 outputs:
   tag:
     description: "Tag string"
@@ -15,23 +18,30 @@ runs:
   using: "composite"
   steps:
     - id: create-and-process-tag-value
+      shell: bash
       run: |
         TAG=${{ github.ref_name }}
-        TAG=$(echo "${TAG}" | sed -E -e 's/[^a-zA-Z0-9_-]//g' -e 's/-+/-/g' -e 's/_+/_/g' -e 's/[_-]*$//g')
-        TAG=${TAG:0:40}
+        SUFFIX=${{ inputs.tag-suffix }}
+
+        # Keeping the tag length to 40 characters as max length allowed for kubernetes labels is 63 characters.
+        # This tag value in labels is used by summon-operator for cases like ensureMigrations. 
+        # 19 characters for timestamp and sha + 35 characters for branch name + 5 characters for suffix = 59 characters, Buffer of 4 characters.
+        
+        if [ ! -z "${SUFFIX}" ]; then
+          TAG=${TAG:0:34}+"-"+${SUFFIX:0:5}
+        else
+          TAG=${TAG:0:40}
+        fi
+        TAG=$(echo "${TAG}" | sed -E -e 's/[^a-zA-Z0-9-]/-/g' -e 's/-+/-/g' -e 's/[-]*$//g')
         echo "TAG=$TAG" >> $GITHUB_ENV
-      shell: bash
     - id: docker-meta
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v5
       with:
         images: ${{ inputs.images }}
         tags: |
           type=raw,value={{date 'X'}}-{{sha}}-${{ env.TAG }}
     - id: image-tag-value
-      run: |
-        version={{ $steps.docker-meta.outputs.version }}
-        tag=${{ steps.docker-meta.outputs.tags }}
-        echo "version=$version" >> $GITHUB_OUTPUT
-        echo "tag=$tag" >> $GITHUB_OUTPUT
       shell: bash
-    
+      run: |
+        echo "version=${{ steps.docker-meta.outputs.version }}" >> $GITHUB_OUTPUT
+        echo "tag=${{ steps.docker-meta.outputs.tags }}" >> $GITHUB_OUTPUT
